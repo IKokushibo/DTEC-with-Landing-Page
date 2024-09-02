@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { FaUserCircle, FaBell } from 'react-icons/fa';
 import Banner from '../../Images/banner.svg';
@@ -37,6 +37,14 @@ function ClearanceRequestForm() {
     crimLab: 'No notes available',
     registrar: 'No notes available',
   });
+
+  // State to handle the modal visibility
+  const [isModalOpen, setIsModalOpen] = useState(true);
+
+  // Function to close the modal
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   const formFields = [
     { label: 'GUIDANCE IN-CHARGE', key: 'guidanceInCharge' },
@@ -175,6 +183,31 @@ function ClearanceRequestForm() {
             </p>
           </div>
         </div>
+
+        {/* Modal for Terms of Use and Legal Warning */}
+        {isModalOpen && (
+          <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center z-50">
+            <div className="bg-white p-8 rounded-lg max-w-md mx-auto text-center">
+              <h2 className="text-4xl font-bold mb-8">Terms of Use and Legal Warning</h2>
+              <p className="mb-4">
+                By accessing this document, you acknowledge and agree that any attempt to <strong>COPY, TAKE SCREENSHOTS,
+                or OTHERWISE REPRODUCE SIGNATURES</strong> in this form is strictly prohibited and illegal.
+                Unauthorized reproduction or use of these signatures will result in severe disciplinary action,
+                including but not limited to <strong>EXPULSION</strong>  from the institution.
+              </p>
+              <p className="mb-6">
+                The institution reserves the right to pursue legal action against individuals found violating these terms.
+                Please proceed with caution and respect the integrity of this process.
+              </p>
+              <button
+                className="bg-green-800 text-white py-2 px-4 rounded"
+                onClick={closeModal}
+              >
+                I Understand
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );

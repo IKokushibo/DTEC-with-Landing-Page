@@ -19,6 +19,11 @@ function NavBar({ scrollToSection, homeRef, featuresRef, developersRef }) {
     };
   }, []);
 
+  const navigateLogin = () => {
+    window.location.href  = 'login-user';
+  }
+
+
   return (
     <>
       <div className={`justify-between w-full h-auto flex fixed z-10 ${navbarColor} p-5 pl-16 transition-colors duration-300 scroll-smooth`}>
@@ -32,7 +37,7 @@ function NavBar({ scrollToSection, homeRef, featuresRef, developersRef }) {
             <a href="#" onClick={(e) => { e.preventDefault(); scrollToSection(featuresRef); }}>About</a>
             <a href="#" onClick={(e) => { e.preventDefault(); scrollToSection(developersRef); }}>Team</a>
           </ul>
-          <button className="bg-white w-24 h-14 mr-10 hover:bg-transparent hover:border-white hover:border-2">
+          <button onClick={navigateLogin} className="bg-white w-24 h-14 mr-10 hover:bg-transparent hover:border-white hover:border-2">
             Login
           </button>
         </div>

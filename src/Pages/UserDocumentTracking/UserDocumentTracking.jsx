@@ -7,24 +7,54 @@ import newTransactionIcon from '../../Images/nt.svg';
 import myTransactionIcon from '../../Images/mt.svg';
 import downloadablesIcon from '../../Images/dl.svg';
 
-// Ensure that modal root element is accessible
 Modal.setAppElement('#root');
 
 function DocumentTracking() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [alertModalIsOpen, setAlertModalIsOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState('');
 
   const handleOpenModal = () => setModalIsOpen(true);
   const handleCloseModal = () => setModalIsOpen(false);
+
+  const handleOpenAlertModal = () => setAlertModalIsOpen(true);
+  const handleCloseAlertModal = () => {
+    setAlertModalIsOpen(false);
+    handleOpenModal(); // Reopen the transaction modal after closing the alert modal
+  };
 
   const handleTransactionChange = (event) => {
     setSelectedTransaction(event.target.value);
   };
 
   const handleSubmit = () => {
-    // Handle the submission of the selected transaction
-    alert(`Selected Transaction: ${selectedTransaction}`);
+    // Redirect based on selected transaction type
+    switch (selectedTransaction) {
+      case 'Implementation Letter (In-Campus)':
+        window.location.href = '/user/implementation-letter-ic';
+        break;
+      case 'Implementation Letter (Off-Campus)':
+        window.location.href = '/user/implementation-letter-oc';
+        break;
+      case 'Communication Letter (In-Campus)':
+        window.location.href = '/user/communication-letter-ic';
+        break;
+      case 'Communication Letter (Off-Campus)':
+        window.location.href = '/user/communication-letter-oc';
+        break;
+      case 'Budget Proposal':
+        // Show alert modal if the Budget Proposal page is not yet available
+        handleOpenAlertModal();
+        break;
+      default:
+        alert("Please select a valid transaction type.");
+        break;
+    }
     handleCloseModal();
+  };
+
+  const navigateMyTransactions = () => {
+    window.location.href = '/user/document-tracking-transactions';
   };
 
   return (
@@ -68,7 +98,7 @@ function DocumentTracking() {
             <span className="text-sm font-normal">Create New Transaction</span>
           </button>
           <a
-            href="/my-transaction"
+            onClick={navigateMyTransactions}
             className="bg-green-700 text-white font-bold py-8 px-12 rounded-lg flex flex-col items-center justify-center hover:bg-green-800 transition-colors w-72 h-45"
           >
             <img src={myTransactionIcon} alt="My Transaction" className="h-12 mb-2" />
@@ -123,6 +153,25 @@ function DocumentTracking() {
             className="bg-green-700 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-800"
           >
             Submit
+          </button>
+        </div>
+      </Modal>
+
+      {/* Alert Modal for Budget Proposal */}
+      <Modal
+        isOpen={alertModalIsOpen}
+        onRequestClose={handleCloseAlertModal}
+        contentLabel="Alert"
+        className="modal-content"
+        overlayClassName="modal-overlay"
+      >
+        <h2 className="text-xl font-bold mb-4 text-center">Budget Proposal page is not yet available.</h2>
+        <div className="flex justify-center">
+          <button
+            onClick={handleCloseAlertModal}
+            className="bg-green-700 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-800"
+          >
+            OK
           </button>
         </div>
       </Modal>

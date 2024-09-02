@@ -46,40 +46,13 @@ const LandingPage = () => {
         const scrollToSection = (ref) => {
           if (ref.current) {
             window.scrollTo({
-              top: ref.current.offsetTop - 80, // Adjust the offset value to match the height of your navbar
+              top: ref.current.offsetTop - 80, 
               behavior: 'smooth',
             });
           }
         };
 
-        useEffect(() => {
-          const sections = document.querySelectorAll("[data-fade='true']");
         
-          const observerOptions = {
-            root: null,
-            rootMargin: "0px",
-            threshold: 0.1,
-          };
-        
-          const observerCallback = (entries, observer) => {
-            entries.forEach((entry) => {
-              if (entry.isIntersecting) {
-                entry.target.classList.add("reveal");
-              }
-            });
-          };
-        
-          const observer = new IntersectionObserver(observerCallback, observerOptions);
-        
-          sections.forEach((section) => {
-            observer.observe(section);
-          });
-        
-          return () => {
-            sections.forEach((section) => observer.unobserve(section));
-          };
-        }, []);
-      
 
   return (
     <>
@@ -188,6 +161,7 @@ const LandingPage = () => {
          
         </div>
         </ScrollAnimation>
+        
         <ScrollAnimation>
         {/* Document Tracking System Section */}
         <div className="bg-white py-16">

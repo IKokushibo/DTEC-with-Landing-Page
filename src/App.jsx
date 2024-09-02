@@ -2,7 +2,7 @@ import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import {LoginUserRoute}  from './Routes/LoginRoute';
 import {UserDashboardRoute,UserDocumentTrackingRoute,UserEClearanceRoute,UserDTTransactionRoute,LandingPageRoute} from  './Routes/UserRoute';
-import {ECRoute,ECOICRoute,ECMTRoute} from  './Routes/DTECRoute';
+import {ECRoute,ECOICRoute,ECMTRoute,OFORoute} from  './Routes/DTECRoute';
 import {ILICRoute,ILOCRoute,CLICRoute,CLOCRoute} from  './Routes/LettersRoute';
 
 const router =  createBrowserRouter([
@@ -19,6 +19,7 @@ const router =  createBrowserRouter([
   CLICRoute,
   CLOCRoute,
   LandingPageRoute,
+  OFORoute,
 ]);
 
 

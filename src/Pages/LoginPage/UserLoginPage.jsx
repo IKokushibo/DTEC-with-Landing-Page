@@ -10,6 +10,11 @@ function UserLoginPage() {
     setPasswordVisible(!passwordVisible);
   };
 
+  const navigateLogin = () => {
+    window.location.href  = '/user/dashboard';
+  }
+ 
+
   return (
     <>
      <Helmet>
@@ -27,14 +32,14 @@ function UserLoginPage() {
           </p>
 
           <div className="mt-12">
-            <h2 className="text-2xl font-semibold text-yellow-500 mb-2">For Document Tracking, click here:</h2>
+            <h2 className="text-2xl font-semibold  mb-2">For <span className="text-yellow-500">  Document Tracking, </span>  click here:</h2>
             <p className="pl-4 text-lg leading-relaxed">
               Stay on top of your documents effortlessly with our intuitive tracking system. Say goodbye to lost paperwork and hello to efficiency.
             </p>
           </div>
 
           <div className="mt-12">
-            <h2 className="text-2xl font-semibold text-yellow-500 mb-2">For E-Clearance Services, click here:</h2>
+            <h2 className="text-2xl font-semibold  mb-2">For <span className="text-yellow-500"> E-Clearance Services, </span> click here:</h2>
             <p className="pl-4 text-lg leading-relaxed">
               Experience the convenience of electronic clearance processes. Say farewell to long queues and welcome a smoother, faster clearance experience.
             </p>
@@ -80,8 +85,9 @@ function UserLoginPage() {
               <div className="flex justify-end mb-6">
                 <a href="#" className="text-sm text-gray-500 hover:text-green-600">Forgot Password?</a>
               </div>
-              <button
+              <button  
                 type="submit"
+                onClick={navigateLogin}
                 className="w-full p-3 text-white bg-green-700 rounded-lg hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-500"
               >
                 Login

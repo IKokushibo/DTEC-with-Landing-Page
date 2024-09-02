@@ -6,6 +6,15 @@ import newTransactionIcon from '../../Images/nt.svg';
 import myTransactionIcon from '../../Images/mt.svg';
 
 function EClearance() {
+
+  const navigateLogin = () => {
+    window.location.href  = '/user/clearance-form';
+  }
+
+  const navigateMyTransactions = () => {
+    window.location.href  = '/user/my-transactions';
+  }
+
   return (
     <>
       <Helmet>
@@ -43,12 +52,12 @@ function EClearance() {
 
         {/* Button Options */}
         <div className="flex justify-center space-x-8 mt-10">
-        <a href="/new-transaction" className="bg-yellow-500 text-white font-bold py-8 px-12 rounded-lg flex flex-col items-center justify-center hover:bg-yellow-600 transition-colors w-72 h-45">
+        <a  onClick={navigateLogin} className="bg-yellow-500 text-white font-bold py-8 px-12 rounded-lg flex flex-col items-center justify-center hover:bg-yellow-600 transition-colors w-72 h-45">
             <img src={newTransactionIcon} alt="New Transaction" className="h-12 mb-2" />
             New Transaction
             <span className="text-sm font-normal">Create New Request</span>
           </a>
-          <a href="/my-transaction" className="bg-yellow-500 text-white font-bold py-8 px-12 rounded-lg flex flex-col items-center justify-center hover:bg-yellow-600 transition-colors w-72 h-45">
+          <a onClick={navigateMyTransactions} className="bg-yellow-500 text-white font-bold py-8 px-12 rounded-lg flex flex-col items-center justify-center hover:bg-yellow-600 transition-colors w-72 h-45">
             <img src={myTransactionIcon} alt="My Transaction" className="h-12 mb-2" />
             My Transaction
             <span className="text-sm font-normal">S.Y. 2024-2025</span>
