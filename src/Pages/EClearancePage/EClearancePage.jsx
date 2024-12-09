@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { FaUserCircle, FaBell } from 'react-icons/fa';
 import Banner from '../../Images/banner.svg';
+import SignatureCanvas from 'react-signature-canvas';
 
 function ClearanceRequestForm() {
-  // Example state to simulate whether a signature is attached
   const [signatures, setSignatures] = useState({
     guidanceInCharge: null,
     studentAffairs: null,
@@ -21,7 +21,6 @@ function ClearanceRequestForm() {
     registrar: null,
   });
 
-  // Initialize notes state with "No notes available"
   const [notes, setNotes] = useState({
     guidanceInCharge: 'No notes available',
     studentAffairs: 'No notes available',
@@ -38,13 +37,10 @@ function ClearanceRequestForm() {
     registrar: 'No notes available',
   });
 
-  // State to handle the modal visibility
-  const [isModalOpen, setIsModalOpen] = useState(true);
-
-  // Function to close the modal
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSignatureModalOpen, setIsSignatureModalOpen] = useState(false);
+  const [signature, setSignature] = useState(null);
+  const [sigCanvas, setSigCanvas] = useState(null);
 
   const formFields = [
     { label: 'GUIDANCE IN-CHARGE', key: 'guidanceInCharge' },
@@ -64,6 +60,27 @@ function ClearanceRequestForm() {
     { label: 'COMPUTER SCIENCE LAB', key: 'computerLab' },
     { label: 'ELECTRONICS & CIRCUITS LAB (IF APPLICABLE)', key: 'electronicsLab' },
   ];
+
+  const openSignatureModal = () => {
+    setIsSignatureModalOpen(true);
+  };
+
+  const closeSignatureModal = () => {
+    setIsSignatureModalOpen(false);
+  };
+
+  const saveSignature = () => {
+    if (sigCanvas) {
+      const signatureData = sigCanvas.toDataURL('image/png');
+      setSignature(signatureData);
+      closeSignatureModal();
+      setIsModalOpen(true); // Show Terms of Use and Legal Warning modal
+    }
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <>
@@ -175,17 +192,52 @@ function ClearanceRequestForm() {
             </div>
           </div>
 
-          <div className="mt-10 text-center">
-            <p className="text-sm text-gray-500">
-              <strong>Important Note:</strong> For the lab-in-charge, please sign only those sections that are relevant to courses you have taken. 
-              Once this form has been completed, present it to the <strong>Cashier</strong> to facilitate the release of 
-              <strong> FINAL EXAM PERMIT</strong>.
-            </p>
+          {/* Process Clearance and Cancel Buttons */}
+          <div className="flex justify-end mt-8 space-x-4">
+            <button
+              className="bg-red-600 text-white py-2 px-4 rounded"
+            >
+              Cancel
+            </button>
+            <button
+              className="bg-green-800 text-white py-2 px-4 rounded"
+              onClick={openSignatureModal}
+            >
+              Process Clearance
+            </button>
           </div>
         </div>
 
-        {/* Modal for Terms of Use and Legal Warning */}
-        {isModalOpen && (
+        {/* Signature Modal */}
+        {isSignatureModalOpen && (
+          <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center z-50">
+            <div className="bg-white p-8 rounded-lg max-w-md mx-auto text-center">
+              <h2 className="text-3xl font-bold mb-4">Sign Below</h2>
+              <SignatureCanvas
+                penColor="black"
+                canvasProps={{ width: 500, height: 200, className: ' sigCanvas' }}
+                ref={(ref) => setSigCanvas(ref)}
+              />
+              <div className="flex justify-between mt-6">
+                <button
+                  className="bg-red-600 text-white py-2 px-4 rounded"
+                  onClick={closeSignatureModal}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="bg-green-800 text-white py-2 px-4 rounded"
+                  onClick={saveSignature}
+                >
+                  Save Signature
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+         {/* Modal for Terms of Use and Legal Warning */}
+         {isModalOpen && (
           <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center z-50">
             <div className="bg-white p-8 rounded-lg max-w-md mx-auto text-center">
               <h2 className="text-4xl font-bold mb-8">Terms of Use and Legal Warning</h2>
@@ -203,10 +255,11 @@ function ClearanceRequestForm() {
                 className="bg-green-800 text-white py-2 px-4 rounded"
                 onClick={closeModal}
               >
-                I Understand
-              </button>
+                  I Agree
+                </button>
+              </div>
             </div>
-          </div>
+         
         )}
       </div>
     </>

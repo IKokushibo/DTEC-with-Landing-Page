@@ -348,8 +348,8 @@ function ImplementationProgramForm() {
           {/* Approved By */}
           <div className="mt-6 text-center">
             <p className="font-semibold">Approved by:</p>
-            <p className="mt-2">ENGR. LOUIE ANGELO G. RIN, MSIT</p>
-            <p>Dean, Institute of Technology</p>
+            <p className="mt-2, font-bold">BENJIE E. TAHUM, LPT, MAED-TESL</p>
+            <p>Director of Student Affairs</p>
           </div>
 
           {/* Submit / Cancel Buttons */}

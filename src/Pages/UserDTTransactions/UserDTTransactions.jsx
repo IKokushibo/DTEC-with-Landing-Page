@@ -1,6 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { FaUserCircle, FaBell } from 'react-icons/fa';
+import { FaUserCircle, FaBell, FaPrint } from 'react-icons/fa';
 import Banner from '../../Images/banner.svg';
 
 const transactionsData = [
@@ -24,6 +24,44 @@ const transactionsData = [
 ];
 
 function MyTransactions() {
+  const handlePrint = (transaction) => {
+    const printContent = `
+      Document Name: ${transaction.documentName}
+      Current Office: ${transaction.currentOffice}
+      Next Office: ${transaction.nextOffice}
+      Date and Time: ${transaction.dateTime}
+      Status: ${transaction.status}
+      Notes: ${transaction.notes}
+    `;
+    
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Print Transaction</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 20px; }
+            h1 { color: #166534; }
+            .content { margin-top: 20px; }
+            .field { margin-bottom: 10px; }
+          </style>
+        </head>
+        <body>
+          <h1>${transaction.documentName}</h1>
+          <div class="content">
+            <div class="field"><strong>Current Office:</strong> ${transaction.currentOffice}</div>
+            <div class="field"><strong>Next Office:</strong> ${transaction.nextOffice}</div>
+            <div class="field"><strong>Date and Time:</strong> ${transaction.dateTime}</div>
+            <div class="field"><strong>Status:</strong> ${transaction.status}</div>
+            <div class="field"><strong>Notes:</strong> ${transaction.notes}</div>
+          </div>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+  };
+
   return (
     <>
       <Helmet>
@@ -50,10 +88,10 @@ function MyTransactions() {
               <th className="py-3 px-6 text-left">Document Name</th>
               <th className="py-3 px-6 text-left">Current Office</th>
               <th className="py-3 px-6 text-left">Next Office</th>
-
               <th className="py-3 px-6 text-left">Date and Time</th>
               <th className="py-3 px-6 text-left">Status</th>
               <th className="py-3 px-6 text-left">Notes</th>
+              <th className="py-3 px-6 text-left">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -67,6 +105,16 @@ function MyTransactions() {
                   {transaction.status}
                 </td>
                 <td className="py-4 px-6">{transaction.notes || 'No notes available'}</td>
+                <td className="py-4 px-6">
+                  {transaction.status === 'Completed' && (
+                    <button
+                      onClick={() => handlePrint(transaction)}
+                      className="bg-green-600 text-white px-3 py-1 rounded-md hover:bg-green-700 transition-colors flex items-center gap-2"
+                    >
+                      <FaPrint /> Print
+                    </button>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>

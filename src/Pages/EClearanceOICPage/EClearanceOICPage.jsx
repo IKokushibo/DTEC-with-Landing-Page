@@ -78,7 +78,7 @@ function OfficeInChargeForm() {
       const canvas = sigCanvas.getCanvas();
       const ctx = canvas.getContext('2d');
       ctx.font = '30px Arial';
-      ctx.fillStyle = 'rgba(255, 0, 0, 0.3)'; // Red with transparency
+      ctx.fillStyle = 'rgba(255, 0, 0, 0.3)';
       ctx.textAlign = 'center';
       ctx.fillText('CONFIDENTIAL', canvas.width / 2, canvas.height / 2);
 

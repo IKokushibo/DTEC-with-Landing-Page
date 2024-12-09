@@ -72,6 +72,7 @@ function CommunicationLetter() {
             <p>President</p>
             <p>Notre Dame of Tacurong College</p>
             <p>City of Tacurong</p>
+            
           </div>
 
           {/* Letter Content */}
