@@ -3,6 +3,9 @@ import UserDocumentTracking from "../Pages/UserDocumentTracking/UserDocumentTrac
 import UserEClearance from "../Pages/UserE-Clearance/UserE-Clearance"
 import UserDTTransactions from "../Pages/UserDTTransactions/UserDTTransactions"
 import LandingPage from "../Pages/LandingPage/LandingPage"
+import ModeratorDashboard from "../Pages/ModeratorDashboard/ModeratorDashboard"
+import ModeratorTransaction from "../Pages/ModeratorTransaction/ModeratorTransaction"
+import PersonnelEClearance from "../Pages/PersonnelClearance/PersonnelClearance"
 
 
 const UserDashboardRoute = {
@@ -25,4 +28,18 @@ const LandingPageRoute = {
   path: "/",
   element:  <LandingPage/>
 }
-export {UserDashboardRoute,UserDocumentTrackingRoute,UserEClearanceRoute,UserDTTransactionRoute,LandingPageRoute}
+
+const PersonnelEClearanceRoute = {
+  path: "/personnel/e-clearance",
+  element:  <PersonnelEClearance/>
+}
+
+const ModeratorDashboardRoute = {
+  path: "/moderator/dashboard",
+  element:  <ModeratorDashboard/>
+}
+const ModeratorTransactionRoute = {
+  path: "/moderator/transaction",
+  element:  <ModeratorTransaction/>
+}
+export {UserDashboardRoute,UserDocumentTrackingRoute,UserEClearanceRoute,UserDTTransactionRoute,LandingPageRoute,ModeratorDashboardRoute,ModeratorTransactionRoute,PersonnelEClearanceRoute}

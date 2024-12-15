@@ -2,6 +2,7 @@ import ILIC from "../Pages/ImplementationIncampus/ImplementationIncampus"
 import ILOC from "../Pages/ImplementationOffCampus/ImplementationOffCampus"
 import CLiC from "../Pages/CommunicationLetterIC/CommunicationLetterIC"
 import CLOC from "../Pages/CommunicationLetterOC/CommunicationLetterOC"
+import BP from "../Pages/BudgetProposalLetter/BudgetProposalLetter"
 
 const ILICRoute = {
   path: "/user/implementation-letter-ic",
@@ -19,6 +20,10 @@ const CLOCRoute = {
   path: "/user/communication-letter-oc",
   element:  <CLOC/>
 }
+const BPRoute = {
+  path: "/user/budget-proposal",
+  element:  <BP/>
+}
 
 
-export {ILICRoute,ILOCRoute,CLICRoute,CLOCRoute}
+export {ILICRoute,ILOCRoute,CLICRoute,CLOCRoute,BPRoute}

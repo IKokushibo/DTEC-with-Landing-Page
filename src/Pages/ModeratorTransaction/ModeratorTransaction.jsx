@@ -1,96 +1,115 @@
 import React, { useState } from "react";
-import { Helmet } from "react-helmet";
 import { FaUserCircle, FaBell, FaEye } from "react-icons/fa";
+import { Helmet } from "react-helmet";
 import Banner from "../../Images/banner.svg";
 import PendingIcon from "../../Images/pending.png";
 import ApprovedIcon from "../../Images/approved.png";
+import LetterModal from "../../Components/Letters/LetterModal";
+import { mockLetters } from "./mockData";
 
-// Mock data
-const mockDocuments = [
-  {
-    id: 1,
-    submittedDateTime: "2024-01-15 09:30 AM",
-    currentOffice: "Registrar's Office",
-    nextOffice: "Dean's Office",
-    status: "For Evaluation",
-    notes: "Awaiting initial review",
-    completedDateTime: "-",
-    letterType: "Communication Letter (In Campus)"
-  },
-  {
-    id: 2,
-    submittedDateTime: "2024-01-14 02:15 PM",
-    currentOffice: "Dean's Office",
-    nextOffice: "President's Office",
-    status: "In Progress",
-    notes: "Under review by Dean",
-    completedDateTime: "-",
-    letterType: "Implementation Letter (Off Campus)"
-  },
-  {
-    id: 3,
-    submittedDateTime: "2024-01-13 11:45 AM",
-    currentOffice: "President's Office",
-    nextOffice: "-",
-    status: "Completed",
-    notes: "Document approved",
-    completedDateTime: "2024-01-15 03:20 PM",
-    letterType: "Budget Proposal"
-  }
-];
+// StatusCard Component
+function StatusCard({ count, title, icon, onClick, isActive }) {
+  return (
+    <div
+      onClick={onClick}
+      className={`relative ${
+        isActive ? 'bg-green-900' : 'bg-green-800'
+      } hover:bg-green-900 rounded-lg p-4 cursor-pointer transition-colors w-64`}
+    >
+      <div className="flex flex-col h-24">
+        <div className="flex justify-between items-start">
+          <span className="text-4xl font-bold text-white">{count}</span>
+          <img src={icon} alt={title} className="w-8 h-8" />
+        </div>
+        <div className="mt-auto">
+          <p className="text-sm uppercase text-white">{title}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
 
-function DocumentTrackingPage() {
+function ModeratorTransaction() {
   // State management
   const [searchTerm, setSearchTerm] = useState("");
   const [entriesPerPage, setEntriesPerPage] = useState(10);
   const [selectedStatus, setSelectedStatus] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [documents] = useState(mockDocuments);
   const [selectedApplicationStatus, setSelectedApplicationStatus] = useState("SELECT ALL");
   const [selectedLetterType, setSelectedLetterType] = useState("SELECT ALL");
+  const [showModal, setShowModal] = useState(false);
+  const [selectedLetter, setSelectedLetter] = useState(null);
+  const [signaturePreview, setSignaturePreview] = useState(null);
+  const [transactions] = useState(mockLetters);
 
-  // Utility functions
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "In Progress": return "bg-yellow-100 text-yellow-800";
-      case "For Evaluation": return "bg-blue-100 text-blue-800";
-      case "Completed": return "bg-green-100 text-green-800";
-      case "Rejected": return "bg-red-100 text-red-800";
-      default: return "bg-gray-100 text-gray-800";
+  // Event handlers
+  const handleSignatureChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSignaturePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
     }
   };
+
+  const handleViewLetter = (letter) => {
+    setSelectedLetter(letter);
+    setShowModal(true);
+  };
+
+  const handleApprove = () => {
+    if (!signaturePreview) {
+      alert("Please attach your signature first");
+      return;
+    }
+    // Handle approval logic here
+    setShowModal(false);
+    setSignaturePreview(null);
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "In Progress":
+        return "bg-yellow-100 text-yellow-800";
+      case "For Evaluation":
+        return "bg-blue-100 text-blue-800";
+      case "Approved":
+        return "bg-green-100 text-green-800";
+      case "Declined":
+        return "bg-red-100 text-red-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  // Filtering logic
+  const filteredTransactions = transactions.filter((transaction) => {
+    const matchesStatus = selectedStatus ? transaction.transactionStatus === selectedStatus : true;
+    const matchesSearch = searchTerm === "" || 
+      transaction.requestedBy.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      transaction.letterType.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesApplicationStatus = selectedApplicationStatus === "SELECT ALL" ? true : 
+      transaction.transactionStatus === selectedApplicationStatus;
+    const matchesLetterType = selectedLetterType === "SELECT ALL" ? true : 
+      transaction.letterType === selectedLetterType;
+
+    return matchesStatus && matchesSearch && matchesApplicationStatus && matchesLetterType;
+  });
+
+  const forEvaluationCount = transactions.filter(t => t.transactionStatus === "For Evaluation").length;
+  const approvedCount = transactions.filter(t => t.transactionStatus === "Approved").length;
 
   const handleCardClick = (status) => {
     setSelectedStatus(status === selectedStatus ? null : status);
     setSelectedApplicationStatus("SELECT ALL");
+    setSelectedLetterType("SELECT ALL");
   };
-
-  const handleViewDocument = (document) => {
-    // Handle document view logic
-    console.log("Viewing document:", document);
-  };
-
-  // Filtering logic
-  const filteredDocuments = documents.filter((doc) => {
-    const matchesStatus = selectedStatus ? doc.status === selectedStatus : true;
-    const matchesSearch = searchTerm === "" || 
-      doc.currentOffice.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      doc.nextOffice.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesApplicationStatus = selectedApplicationStatus === "SELECT ALL" ? true : 
-      doc.status === selectedApplicationStatus;
-    const matchesLetterType = selectedLetterType === "SELECT ALL" ? true : 
-      doc.letterType === selectedLetterType;
-    
-    return matchesStatus && matchesSearch && matchesApplicationStatus && matchesLetterType;
-  });
-
-  const pendingCount = documents.filter(d => d.status === "In Progress").length;
-  const completedCount = documents.filter(d => d.status === "Completed").length;
 
   return (
     <>
       <Helmet>
-        <title>Document Tracking System</title>
+        <title>Moderator Transactions</title>
       </Helmet>
 
       <div className="min-h-screen bg-gray-100">
@@ -105,50 +124,28 @@ function DocumentTrackingPage() {
 
         {/* Title Section */}
         <div className="py-6 px-10">
-          <h1 className="text-3xl font-bold text-gray-800">Document Tracking System</h1>
-          <p className="mt-2 text-gray-600">Track and manage document flow across offices</p>
+          <h1 className="text-3xl font-bold text-gray-800">Club Letters Processing</h1>
+          <p className="mt-2 text-gray-600">Manage and process club letters</p>
           <hr className="mt-4 border-gray-300" />
         </div>
 
-        {/* Status Cards and Filters */}
+        {/* Status Cards */}
         <div className="px-10 flex justify-between items-start">
-          {/* Status Cards */}
           <div className="flex space-x-4">
-            {/* Pending Card */}
-            <div
+            <StatusCard
+              count={forEvaluationCount}
+              title="FOR EVALUATION"
+              icon={PendingIcon}
               onClick={() => handleCardClick("For Evaluation")}
-              className={`relative ${
-                selectedStatus === "For Evaluation" ? 'bg-green-900' : 'bg-green-800'
-              } hover:bg-green-900 rounded-lg p-4 cursor-pointer transition-colors w-64`}
-            >
-              <div className="flex flex-col h-24">
-                <div className="flex justify-between items-start">
-                  <span className="text-4xl font-bold text-white">{pendingCount}</span>
-                  <img src={PendingIcon} alt="Pending" className="w-8 h-8" />
-                </div>
-                <div className="mt-auto">
-                  <p className="text-sm uppercase text-white">For Evaluation</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Completed Card */}
-            <div
-              onClick={() => handleCardClick("Completed")}
-              className={`relative ${
-                selectedStatus === "Completed" ? 'bg-green-900' : 'bg-green-800'
-              } hover:bg-green-900 rounded-lg p-4 cursor-pointer transition-colors w-64`}
-            >
-              <div className="flex flex-col h-24">
-                <div className="flex justify-between items-start">
-                  <span className="text-4xl font-bold text-white">{completedCount}</span>
-                  <img src={ApprovedIcon} alt="Completed" className="w-8 h-8" />
-                </div>
-                <div className="mt-auto">
-                  <p className="text-sm uppercase text-white">COMPLETED</p>
-                </div>
-              </div>
-            </div>
+              isActive={selectedStatus === "For Evaluation"}
+            />
+            <StatusCard
+              count={approvedCount}
+              title="APPROVED"
+              icon={ApprovedIcon}
+              onClick={() => handleCardClick("Approved")}
+              isActive={selectedStatus === "Approved"}
+            />
           </div>
 
           {/* Filters */}
@@ -165,10 +162,10 @@ function DocumentTrackingPage() {
                 }}
               >
                 <option>SELECT ALL</option>
-                <option>For Evaluation</option>
                 <option>In Progress</option>
-                <option>Completed</option>
-                <option>Rejected</option>
+                <option>For Evaluation</option>
+                <option>Approved</option>
+                <option>Declined</option>
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 mt-6">
                 <svg className="fill-current h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -201,16 +198,13 @@ function DocumentTrackingPage() {
           </div>
         </div>
 
-        {/* Rest of the component remains the same */}
-        {/* Documents Table */}
+        {/* Letters Table */}
         <div className="mx-10 mt-10">
-          {/* ... (rest of the table code remains unchanged) ... */}
-          {/* The existing table code continues here */}
           <div className="bg-white rounded-lg shadow overflow-hidden">
-            {/* Table Filters */}
+            {/* Table Header */}
             <div className="bg-green-800 text-white p-4">
               <div className="flex justify-between items-center">
-                <h2 className="text-lg font-semibold">Document Tracking List</h2>
+                <h2 className="text-lg font-semibold">List of Letters</h2>
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center">
                     <span className="text-sm mr-2">Show</span>
@@ -238,36 +232,36 @@ function DocumentTrackingPage() {
               </div>
             </div>
             
-            {/* Table */}
+            {/* Table Content */}
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="bg-gray-50 border-b">
-                    <th className="p-3 text-left text-xs font-medium text-gray-500 uppercase">Date and Time Submitted</th>
-                    <th className="p-3 text-left text-xs font-medium text-gray-500 uppercase">Current Office</th>
-                    <th className="p-3 text-left text-xs font-medium text-gray-500 uppercase">Next Office</th>
+                    <th className="p-3 text-left text-xs font-medium text-gray-500 uppercase">Date Requested</th>
+                    <th className="p-3 text-left text-xs font-medium text-gray-500 uppercase">Letter Type</th>
+                    <th className="p-3 text-left text-xs font-medium text-gray-500 uppercase">Name of Transaction</th>
+                    <th className="p-3 text-left text-xs font-medium text-gray-500 uppercase">Requested By</th>
                     <th className="p-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                    <th className="p-3 text-left text-xs font-medium text-gray-500 uppercase">Notes</th>
-                    <th className="p-3 text-left text-xs font-medium text-gray-500 uppercase">Date and Time Completed</th>
+                    <th className="p-3 text-left text-xs font-medium text-gray-500 uppercase">Last Update</th>
                     <th className="p-3 text-left text-xs font-medium text-gray-500 uppercase">Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  {filteredDocuments.map((doc) => (
-                    <tr key={doc.id} className="hover:bg-gray-50">
-                      <td className="p-3">{doc.submittedDateTime}</td>
-                      <td className="p-3">{doc.currentOffice}</td>
-                      <td className="p-3">{doc.nextOffice}</td>
+                  {filteredTransactions.map((transaction) => (
+                    <tr key={transaction.id} className="hover:bg-gray-50">
+                      <td className="p-3">{transaction.dateRequested}</td>
+                      <td className="p-3">{transaction.letterType}</td>
+                      <td className="p-3">{transaction.nameOfTransaction}</td>
+                      <td className="p-3">{transaction.requestedBy}</td>
                       <td className="p-3">
-                        <span className={`${getStatusColor(doc.status)} px-2 py-1 rounded text-sm`}>
-                          {doc.status}
+                        <span className={`${getStatusColor(transaction.transactionStatus)} px-2 py-1 rounded text-sm`}>
+                          {transaction.transactionStatus}
                         </span>
                       </td>
-                      <td className="p-3">{doc.notes}</td>
-                      <td className="p-3">{doc.completedDateTime}</td>
+                      <td className="p-3">{transaction.lastUpdatingDate}</td>
                       <td className="p-3">
                         <button 
-                          onClick={() => handleViewDocument(doc)}
+                          onClick={() => handleViewLetter(transaction)}
                           className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded flex items-center space-x-1"
                         >
                           <FaEye className="text-sm" />
@@ -284,32 +278,34 @@ function DocumentTrackingPage() {
             <div className="bg-white px-4 py-3 border-t border-gray-200">
               <div className="flex justify-between items-center">
                 <div className="text-sm text-gray-600">
-                  Showing 1 to {filteredDocuments.length} of {filteredDocuments.length} entries
+                  Showing 1 to {filteredTransactions.length} of {filteredTransactions.length} entries
                 </div>
                 <div className="flex space-x-2">
-                  <button 
-                    className="px-3 py-1 border rounded text-sm text-gray-600 hover:bg-gray-50"
-                    onClick={() => setCurrentPage(currentPage - 1)}
-                  >
-                    Previous
-                  </button>
-                  <button className="px-3 py-1 bg-green-800 text-white rounded text-sm">
-                    {currentPage}
-                  </button>
-                  <button 
-                    className="px-3 py-1 border rounded text-sm text-gray-600 hover:bg-gray-50"
-                    onClick={() => setCurrentPage(currentPage + 1)}
-                  >
-                    Next
-                  </button>
+                  <button className="px-3 py-1 border rounded text-sm text-gray-600 hover:bg-gray-50">Previous</button>
+                  <button className="px-3 py-1 bg-green-800 text-white rounded text-sm">1</button>
+                  <button className="px-3 py-1 border rounded text-sm text-gray-600 hover:bg-gray-50">Next</button>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
+        {/* Letter Modal */}
+        {showModal && (
+          <LetterModal
+            letter={selectedLetter}
+            onClose={() => {
+              setShowModal(false);
+              setSignaturePreview(null);
+            }}
+            signaturePreview={signaturePreview}
+            onSignatureChange={handleSignatureChange}
+            onApprove={handleApprove}
+          />
+        )}
       </div>
     </>
   );
 }
 
-export default DocumentTrackingPage;
+export default ModeratorTransaction;

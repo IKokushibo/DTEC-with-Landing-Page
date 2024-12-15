@@ -135,7 +135,7 @@ function CommunicationLetter() {
 
               <div>
                 <p className="font-semibold">Noted by:</p>
-                <p className="font-bold mt-2">ENGR. LOUIE ANGELO G. VILLEGAS, PCPE, MOE-CPE</p>
+                <p className="font-bold mt-2">BENJIE E. TAHUM, LPT, MAED-TESL</p>
                 <p>DIRECTOR OF STUDENT AFFAIRS</p>
               </div>
 

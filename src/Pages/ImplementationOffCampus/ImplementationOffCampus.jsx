@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { FaUserCircle, FaBell } from 'react-icons/fa';
 import Banner from '../../Images/banner.svg';
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
 
 function ImplementationLetterOffCampus() {
   const [rows, setRows] = useState([{ activity: '', objective: '', output: '', committee: '' }]);
   const [signaturePreview, setSignaturePreview] = useState(null);
+  const [selectedDateTime, setSelectedDateTime] = useState(null);
 
   const addRow = () => {
     setRows([...rows, { activity: '', objective: '', output: '', committee: '' }]);
@@ -32,6 +35,18 @@ function ImplementationLetterOffCampus() {
       reader.readAsDataURL(file);
     } else {
       setSignaturePreview(null);
+    }
+  };
+
+  const handleDateChange = (date) => {
+    const currentDate = new Date();
+    const sevenDaysFromNow = new Date();
+    sevenDaysFromNow.setDate(currentDate.getDate() + 7);
+
+    if (date > sevenDaysFromNow) {
+      setSelectedDateTime(date);
+    } else {
+      alert('Please select a date at least 7 days from today');
     }
   };
 
@@ -100,14 +115,34 @@ function ImplementationLetterOffCampus() {
             ></textarea>
           </div>
 
-          {/* Date and Place of Implementation */}
+          {/* Date and Time of Implementation */}
           <div className="mt-4">
-            <label className="block font-semibold mb-2">IV. DATE AND PLACE OF IMPLEMENTATION</label>
-            <input 
-              type="text" 
-              className="w-full border-gray-300 border-2 p-2 rounded-md" 
-              placeholder="Enter Date and Place of Implementation" 
-            />
+            <label className="block font-semibold mb-2">IV. DATE AND TIME OF IMPLEMENTATION</label>
+            <style>
+              {`
+                .react-datepicker-wrapper {
+                  display: block !important;
+                  width: 100% !important;
+                }
+                .react-datepicker__input-container {
+                  display: block !important;
+                  width: 100% !important;
+                }
+              `}
+            </style>
+            <div className="flex items-center gap-2 mb-2">
+              <DatePicker
+                selected={selectedDateTime}
+                onChange={handleDateChange}
+                showTimeSelect
+                timeFormat="HH:mm"
+                timeIntervals={15}
+                dateFormat="MMMM d, yyyy h:mm aa"
+                className="w-full border-gray-300 border-2 p-2 rounded-md"
+                placeholderText="Select date and time"
+                minDate={new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000)}
+              />
+            </div>
           </div>
 
           {/* Committees, Objectives, Outputs */}
@@ -243,8 +278,9 @@ function ImplementationLetterOffCampus() {
           
           {/* Submit / Cancel Buttons */} 
           <div className="flex justify-end mt-6 space-x-4"> 
-              <button className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">Cancel</button> 
-              <button className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">Submit</button> </div>
+            <button className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">Cancel</button> 
+            <button className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">Submit</button>
+          </div>
         </div>
       </div>
     </>

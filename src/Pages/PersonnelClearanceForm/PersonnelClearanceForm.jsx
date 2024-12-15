@@ -4,37 +4,45 @@ import { FaUserCircle, FaBell } from 'react-icons/fa';
 import Banner from '../../Images/banner.svg';
 import SignatureCanvas from 'react-signature-canvas';
 
-function ClearanceRequestForm() {
+function PersonnelClearanceForm() {
   const [signatures, setSignatures] = useState({
-    guidanceInCharge: null,
-    studentAffairs: null,
+    libraryMultimedia: null,
     scienceLab: null,
+    criminologyLab: null,
     computerLab: null,
-    electronicsLab: null,
-    dean: null,
+    elCircuits: null,
+    hrm: null,
+    nursing: null,
     cashier: null,
-    librarian: null,
-    schoolNurse: null,
-    programHead: null,
-    hmLab: null,
-    crimLab: null,
     registrar: null,
+    accountingClerk: null,
+    financeOfficer: null,
+    propertyCustodian: null,
+    programHead: null,
+    dean: null,
+    vpaf: null,
+    vpa: null,
+    president: null
   });
 
   const [notes, setNotes] = useState({
-    guidanceInCharge: 'No notes available',
-    studentAffairs: 'No notes available',
+    libraryMultimedia: 'No notes available',
     scienceLab: 'No notes available',
+    criminologyLab: 'No notes available',
     computerLab: 'No notes available',
-    electronicsLab: 'No notes available',
-    dean: 'No notes available',
+    elCircuits: 'No notes available',
+    hrm: 'No notes available',
+    nursing: 'No notes available',
     cashier: 'No notes available',
-    librarian: 'No notes available',
-    schoolNurse: 'No notes available',
-    programHead: 'No notes available',
-    hmLab: 'No notes available',
-    crimLab: 'No notes available',
     registrar: 'No notes available',
+    accountingClerk: 'No notes available',
+    financeOfficer: 'No notes available',
+    propertyCustodian: 'No notes available',
+    programHead: 'No notes available',
+    dean: 'No notes available',
+    vpaf: 'No notes available',
+    vpa: 'No notes available',
+    president: 'No notes available'
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -42,27 +50,27 @@ function ClearanceRequestForm() {
   const [signature, setSignature] = useState(null);
   const [sigCanvas, setSigCanvas] = useState(null);
 
-  // Reordered form fields
   const formFields = [
-    { label: 'GUIDANCE IN-CHARGE', key: 'guidanceInCharge' },
+    { label: 'LIBRARY/MULTIMEDIA', key: 'libraryMultimedia' },
     { label: 'CASHIER', key: 'cashier' },
-    { label: 'LIBRARIAN', key: 'librarian' },
-    { label: 'SCHOOL NURSE', key: 'schoolNurse' },
-    { label: 'PROGRAM HEAD (IF APPLICABLE)', key: 'programHead' },
-    { label: 'HM LAB (IF APPLICABLE)', key: 'hmLab' },
-    { label: 'CRIM LAB (IF APPLICABLE)', key: 'crimLab' },
     { label: 'REGISTRAR', key: 'registrar' },
+    { label: 'ACCOUNTING CLERK', key: 'accountingClerk' },
+    { label: 'FINANCE OFFICER', key: 'financeOfficer' },
+    { label: 'PROPERTY CUSTODIAN', key: 'propertyCustodian' },
+    { label: 'PROGRAM HEAD', key: 'programHead' },
+    { label: 'DEAN', key: 'dean' },
+    { label: 'VPAF', key: 'vpaf' },
+    { label: 'VPA', key: 'vpa' },
+    { label: 'PRESIDENT', key: 'president' }
   ];
 
   const laboratoryFields = [
-    { label: 'SCIENCE LAB (IF APPLICABLE)', key: 'scienceLab' },
-    { label: 'COMPUTER SCIENCE LAB', key: 'computerLab' },
-    { label: 'ELECTRONICS & CIRCUITS LAB (IF APPLICABLE)', key: 'electronicsLab' },
-  ];
-
-  const afterLabFields = [
-    { label: 'DIRECTOR OF STUDENT AFFAIRS', key: 'studentAffairs' },
-    { label: 'DEAN', key: 'dean' },
+    { label: 'SCIENCE', key: 'scienceLab' },
+    { label: 'CRIMINOLOGY', key: 'criminologyLab' },
+    { label: 'COMPUTER', key: 'computerLab' },
+    { label: 'EL CIRCUITS', key: 'elCircuits' },
+    { label: 'HRM', key: 'hrm' },
+    { label: 'NURSING', key: 'nursing' }
   ];
 
   const openSignatureModal = () => {
@@ -89,7 +97,7 @@ function ClearanceRequestForm() {
   return (
     <>
       <Helmet>
-        <title>Clearance Request Form</title>
+        <title>Faculty Clearance Form</title>
       </Helmet>
 
       <div className="min-h-screen bg-gray-100">
@@ -106,10 +114,10 @@ function ClearanceRequestForm() {
         <div className="p-8">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-bold">New Clearance Request</h1>
+              <h1 className="text-3xl font-bold">New Faculty Clearance</h1>
               <p className="text-sm">Create New Request</p>
             </div>
-            <h2 className="text-3xl font-bold">E-Clearance</h2>
+            <h2 className="text-3xl font-bold">Faculty E-Clearance</h2>
           </div>
 
           <div className="border-b border-gray-400 w-full my-4"></div>
@@ -120,79 +128,50 @@ function ClearanceRequestForm() {
           <h2 className="text-center text-2xl font-bold mb-8">Certificate of Clearance</h2>
 
           <p className="text-center mb-6">
-            This is to certify that <strong>TORRES, Christian James V.</strong>, a <strong>4th-year</strong> BSCS student, 
+            This is to certify that <strong>LOZADA, MARK JOSEPH L.</strong>, a faculty member of <strong>CAS-ED</strong>, 
             has complied with all the requirements and is cleared of all responsibilities under my charge 
             this First Semester, A.Y. 2024 - 2025:
           </p>
 
-          <div className="grid grid-cols-2 gap-x-16 gap-y-8 text-lg">
-            {formFields.map(({ label, key }) => (
-              <div key={key} className="flex flex-col">
-                <div className="flex justify-between items-center">
-                  <span className="font-bold">{label}:</span>
-                  <span className={`ml-2 ${signatures[key] ? 'text-green-600' : 'text-red-600'}`}>
-                    {signatures[key] ? 'Signed' : 'Pending'}
-                  </span>
-                </div>
-                <div className="mt-2">
-                  {signatures[key] ? (
-                    <div className="border border-gray-400 p-2 rounded-md text-center">
-                      <img src={signatures[key]} alt="Signature" className="h-10 mx-auto" />
+          {/* Laboratory Section */}
+          <div className="mb-8">
+            <div className="border border-gray-400 p-4 rounded-lg">
+              <h3 className="font-bold mb-4">LABORATORY CLEARANCE</h3>
+              <div className="grid grid-cols-2 gap-x-8 gap-y-6">
+                {laboratoryFields.map(({ label, key }) => (
+                  <div key={key} className="flex flex-col">
+                    <div className="flex justify-between items-center">
+                      <span className="font-bold">{label}:</span>
+                      <span className={`ml-2 ${signatures[key] ? 'text-green-600' : 'text-red-600'}`}>
+                        {signatures[key] ? 'Signed' : 'Pending'}
+                      </span>
                     </div>
-                  ) : (
-                    <div className="border border-gray-400 p-2 rounded-md text-center text-gray-500">
-                      No signature yet (Pending)
-                    </div>
-                  )}
-                </div>
-                <div className="mt-2">
-                  <div className="border border-gray-300 p-2 rounded-md">
-                    <span className="font-bold">Notes:</span>
-                    <div className="text-gray-500">{notes[key]}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
-
-            {/* Laboratory In-Charge Section */}
-            <div className="col-span-2">
-              <div className="border border-gray-400 p-4 rounded-lg">
-                <h3 className="font-bold mb-4">LABORATORY IN-CHARGE</h3>
-
-                <div className="grid grid-cols-2 gap-x-8 gap-y-6">
-                  {laboratoryFields.map(({ label, key }) => (
-                    <div key={key} className="flex flex-col">
-                      <div className="flex justify-between items-center">
-                        <span className="font-bold">{label}:</span>
-                        <span className={`ml-2 ${signatures[key] ? 'text-green-600' : 'text-red-600'}`}>
-                          {signatures[key] ? 'Signed' : 'Pending'}
-                        </span>
-                      </div>
-                      <div className="mt-2">
-                        {signatures[key] ? (
-                          <div className="border border-gray-400 p-2 rounded-md text-center">
-                            <img src={signatures[key]} alt="Signature" className="h-10 mx-auto" />
-                          </div>
-                        ) : (
-                          <div className="border border-gray-400 p-2 rounded-md text-center text-gray-500">
-                            No signature yet (Pending)
-                          </div>
-                        )}
-                      </div>
-                      <div className="mt-2">
-                        <div className="border border-gray-300 p-2 rounded-md">
-                          <span className="font-bold">Notes:</span>
-                          <div className="text-gray-500">{notes[key]}</div>
+                    <div className="mt-2">
+                      {signatures[key] ? (
+                        <div className="border border-gray-400 p-2 rounded-md text-center">
+                          <img src={signatures[key]} alt="Signature" className="h-10 mx-auto" />
                         </div>
+                      ) : (
+                        <div className="border border-gray-400 p-2 rounded-md text-center text-gray-500">
+                          No signature yet (Pending)
+                        </div>
+                      )}
+                    </div>
+                    <div className="mt-2">
+                      <div className="border border-gray-300 p-2 rounded-md">
+                        <span className="font-bold">Notes:</span>
+                        <div className="text-gray-500">{notes[key]}</div>
                       </div>
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
             </div>
+          </div>
 
-            {/* After Laboratory Fields */}
-            {afterLabFields.map(({ label, key }) => (
+          {/* Other Clearances */}
+          <div className="grid grid-cols-2 gap-x-16 gap-y-8 text-lg">
+            {formFields.map(({ label, key }) => (
               <div key={key} className="flex flex-col">
                 <div className="flex justify-between items-center">
                   <span className="font-bold">{label}:</span>
@@ -272,7 +251,7 @@ function ClearanceRequestForm() {
                 By accessing this document, you acknowledge and agree that any attempt to <strong>COPY, TAKE SCREENSHOTS,
                 or OTHERWISE REPRODUCE SIGNATURES</strong> in this form is strictly prohibited and illegal.
                 Unauthorized reproduction or use of these signatures will result in severe disciplinary action,
-                including but not limited to <strong>EXPULSION</strong> from the institution.
+                including but not limited to <strong>TERMINATION</strong> of employment.
               </p>
               <p className="mb-6">
                 The institution reserves the right to pursue legal action against individuals found violating these terms.
@@ -292,4 +271,4 @@ function ClearanceRequestForm() {
   );
 }
 
-export default ClearanceRequestForm;
+export default PersonnelClearanceForm;

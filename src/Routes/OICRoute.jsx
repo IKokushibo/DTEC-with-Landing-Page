@@ -2,6 +2,8 @@ import PendingTransaction from "../Pages/PendingTransaction/PendingTransaction"
 import ApprovedTransaction from "../Pages/ApprovedTransactions/ApprovedTransactions"
 import DeclinedTransaction from "../Pages/DeclinedTransactions/DeclinedTransactions"
 import OICDash from "../Pages/OICDashboard/OICDashboard"
+import OICTransaction from "../Pages/OICTransaction/OICTransaction"
+
 
 
 const PendingTransactionRoute = {
@@ -20,4 +22,8 @@ const OICDashboardRoute = {
   path: "/oic/dashboard",
   element:  <OICDash/>
 }
-export {PendingTransactionRoute, ApprovedTransactionRoute,DeclinedTransactionRoute,OICDashboardRoute}
+const OICTransactionRoute = {
+  path: "/oic/transactions",
+  element:  <OICTransaction/>
+}
+export {PendingTransactionRoute, ApprovedTransactionRoute,DeclinedTransactionRoute,OICDashboardRoute,OICTransactionRoute}

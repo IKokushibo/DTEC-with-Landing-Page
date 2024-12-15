@@ -43,8 +43,7 @@ function DocumentTracking() {
         window.location.href = '/user/communication-letter-oc';
         break;
       case 'Budget Proposal':
-        // Show alert modal if the Budget Proposal page is not yet available
-        handleOpenAlertModal();
+        window.location.href = '/user/budget-proposal';
         break;
       default:
         alert("Please select a valid transaction type.");

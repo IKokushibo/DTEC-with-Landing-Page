@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { FaUserCircle, FaBell } from 'react-icons/fa';
+import { FaUserCircle, FaBell, FaTrash } from 'react-icons/fa';
 import Banner from '../../Images/banner.svg';
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
 
 function ImplementationProgramForm() {
   const [signaturePreview, setSignaturePreview] = useState(null);
-  const [objectives, setObjectives] = useState(['']);
-  const [dateTimes, setDateTimes] = useState(['']);
-  const [sourcesOfFund, setSourcesOfFund] = useState(['']);
-  const [projectedExpenses, setProjectedExpenses] = useState(['']);
-  const [expectedOutputs, setExpectedOutputs] = useState(['']);
+  const [rationale, setRationale] = useState('');
+  const [objectives, setObjectives] = useState('');
+  const [dateTimes, setDateTimes] = useState([null]);
+  const [sourcesOfFund, setSourcesOfFund] = useState('');
+  const [projectedExpenses, setProjectedExpenses] = useState('');
+  const [expectedOutputs, setExpectedOutputs] = useState('');
 
   const handleSignatureChange = (e) => {
     const file = e.target.files[0];
@@ -24,18 +27,46 @@ function ImplementationProgramForm() {
     }
   };
 
-  const handleFieldChange = (setter, index, value) => {
-    const newFieldValues = [...setter];
-    newFieldValues[index] = value;
-    setter(newFieldValues);
+  const handleDateChange = (date, index) => {
+    const currentDate = new Date();
+    const sevenDaysFromNow = new Date();
+    sevenDaysFromNow.setDate(currentDate.getDate() + 7);
+
+    if (date > sevenDaysFromNow) {
+      const newDates = [...dateTimes];
+      newDates[index] = date;
+      setDateTimes(newDates);
+    } else {
+      alert('Please select a date at least 7 days from today');
+    }
   };
 
-  const addField = (setter) => {
-    setter((prevFields) => [...prevFields, '']);
+  const handleTextAreaKeyDown = (e, setValue, currentValue) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const cursorPosition = e.target.selectionStart;
+      const textBeforeCursor = currentValue.substring(0, cursorPosition);
+      const textAfterCursor = currentValue.substring(cursorPosition);
+      
+      // Add bullet point if at start of line or after another bullet point
+      const newLine = textBeforeCursor.endsWith('\n') || textBeforeCursor === '' ? '• ' : '\n• ';
+      
+      setValue(textBeforeCursor + newLine + textAfterCursor);
+      
+      // Set cursor position after the bullet point
+      setTimeout(() => {
+        e.target.selectionStart = cursorPosition + newLine.length;
+        e.target.selectionEnd = cursorPosition + newLine.length;
+      }, 0);
+    }
   };
 
-  const removeField = (setter, index) => {
-    setter((prevFields) => prevFields.filter((_, i) => i !== index));
+  const addDateTime = () => {
+    setDateTimes(prev => [...prev, null]);
+  };
+
+  const removeDateTime = (index) => {
+    setDateTimes(prev => prev.filter((_, i) => i !== index));
   };
 
   return (
@@ -71,291 +102,163 @@ function ImplementationProgramForm() {
         <div className="p-8 max-w-6xl mx-auto bg-white shadow-lg rounded-lg">
           <h2 className="text-center text-2xl font-bold mb-8">IMPLEMENTATION PROGRAM</h2>
 
-          {/* Organization/Club Name */}
-          <div className="mt-4">
-            <label className="block font-semibold mb-2">ORGANIZATION/CLUB NAME:</label>
-            <input 
-              type="text" 
-              className="w-full border-gray-300 border-2 p-2 rounded-md" 
-              placeholder="Enter Organization/Club Name" 
-            />
-          </div>
+          {/* Basic Fields */}
+          <div className="space-y-4">
+            <div>
+              <label className="block font-semibold mb-2">ORGANIZATION/CLUB NAME:</label>
+              <input type="text" className="w-full border-gray-300 border-2 p-2 rounded-md" />
+            </div>
 
-          {/* Activity Name */}
-          <div className="mt-4">
-            <label className="block font-semibold mb-2">NAME OF ACTIVITY:</label>
-            <input 
-              type="text" 
-              className="w-full border-gray-300 border-2 p-2 rounded-md" 
-              placeholder="Enter Name of Activity" 
-            />
-          </div>
+            <div>
+              <label className="block font-semibold mb-2">NAME OF ACTIVITY:</label>
+              <input type="text" className="w-full border-gray-300 border-2 p-2 rounded-md" />
+            </div>
 
-          {/* Semester & School Year */}
-          <div className="mt-4">
-            <label className="block font-semibold mb-2">SEMESTER & SCHOOL YEAR:</label>
-            <input 
-              type="text" 
-              className="w-full border-gray-300 border-2 p-2 rounded-md" 
-              placeholder="Enter Semester & School Year" 
-            />
-          </div>
+            <div>
+              <label className="block font-semibold mb-2">SEMESTER & SCHOOL YEAR:</label>
+              <input type="text" className="w-full border-gray-300 border-2 p-2 rounded-md" />
+            </div>
 
-          {/* Title */}
-          <div className="mt-4">
-            <label className="block font-semibold mb-2">TITLE:</label>
-            <input 
-              type="text" 
-              className="w-full border-gray-300 border-2 p-2 rounded-md" 
-              placeholder="Enter Title" 
-            />
-          </div>
+            <div>
+              <label className="block font-semibold mb-2">TITLE:</label>
+              <input type="text" className="w-full border-gray-300 border-2 p-2 rounded-md" />
+            </div>
 
-          {/* Date and Time */}
-          <div className="mt-4">
-            <label className="block font-semibold mb-2">DATE AND TIME:</label>
-            {dateTimes.map((dateTime, index) => (
-              <div key={index} className="flex items-center mb-2">
-                <input
-                  type="text"
-                  className="w-full border-gray-300 border-2 p-2 rounded-md"
-                  placeholder="Enter Date and Time"
-                  value={dateTime}
-                  onChange={(e) => handleFieldChange(setDateTimes, index, e.target.value)}
-                />
-                {dateTimes.length > 1 && (
-                  <button
-                    type="button"
-                    className="ml-2 text-red-500"
-                    onClick={() => removeField(setDateTimes, index)}
-                  >
-                    Remove
-                  </button>
-                )}
-              </div>
-            ))}
-            <button
-              type="button"
-              className="mt-2 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
-              onClick={() => addField(setDateTimes)}
-            >
-              Add Date and Time
-            </button>
-          </div>
+            {/* Date and Time Section */}
+            <div>
+              <label className="block font-semibold mb-2">DATE AND TIME OF IMPLEMENTATION:</label>
+              <style>
+                {`
+                  .react-datepicker-wrapper {
+                    display: block !important;
+                    width: 100% !important;
+                  }
+                  .react-datepicker__input-container {
+                    display: block !important;
+                    width: 100% !important;
+                  }
+                `}
+              </style>
+              {dateTimes.map((dateTime, index) => (
+                <div key={index} className="flex items-center gap-2 mb-2">
+                  <div className="flex-1">
+                    <DatePicker
+                      selected={dateTime}
+                      onChange={(date) => handleDateChange(date, index)}
+                      showTimeSelect
+                      timeFormat="HH:mm"
+                      timeIntervals={15}
+                      dateFormat="MMMM d, yyyy h:mm aa"
+                      className="w-full border-gray-300 border-2 p-2 rounded-md"
+                      placeholderText="Select date and time"
+                      minDate={new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000)}
+                    />
+                  </div>
+                  {dateTimes.length > 1 && (
+                    <button
+                      type="button"
+                      className="text-red-500"
+                      onClick={() => removeDateTime(index)}
+                    >
+                      <FaTrash />
+                    </button>
+                  )}
+                </div>
+              ))}
 
-          {/* Venue */}
-          <div className="mt-4">
-            <label className="block font-semibold mb-2">VENUE:</label>
-            <input 
-              type="text" 
-              className="w-full border-gray-300 border-2 p-2 rounded-md" 
-              placeholder="Enter Venue" 
-            />
-          </div>
+            </div>
 
-          {/* Participants */}
-          <div className="mt-4">
-            <label className="block font-semibold mb-2">PARTICIPANTS:</label>
-            <input 
-              type="text" 
-              className="w-full border-gray-300 border-2 p-2 rounded-md" 
-              placeholder="Enter Participants" 
-            />
-          </div>
+            <div>
+              <label className="block font-semibold mb-2">VENUE:</label>
+              <input type="text" className="w-full border-gray-300 border-2 p-2 rounded-md" />
+            </div>
 
-          {/* Rationale */}
-          <div className="mt-4">
-            <label className="block font-semibold mb-2">RATIONALE:</label>
-            <textarea 
-              rows="4" 
-              className="w-full border-gray-300 border-2 p-2 rounded-md" 
-              placeholder="Enter Rationale"
-            ></textarea>
-          </div>
+            <div>
+              <label className="block font-semibold mb-2">PARTICIPANTS:</label>
+              <input type="text" className="w-full border-gray-300 border-2 p-2 rounded-md" />
+            </div>
 
-          {/* Objectives */}
-          <div className="mt-4">
-            <label className="block font-semibold mb-2">OBJECTIVES:</label>
-            {objectives.map((objective, index) => (
-              <div key={index} className="flex items-center mb-2">
+            {/* Bullet Point Text Areas */}
+            {[
+              { label: 'RATIONALE', value: rationale, setter: setRationale },
+              { label: 'OBJECTIVES', value: objectives, setter: setObjectives },
+              { label: 'SOURCES OF FUND', value: sourcesOfFund, setter: setSourcesOfFund },
+              { label: 'PROJECTED EXPENSES', value: projectedExpenses, setter: setProjectedExpenses },
+              { label: 'EXPECTED OUTPUT', value: expectedOutputs, setter: setExpectedOutputs }
+            ].map((field) => (
+              <div key={field.label}>
+                <label className="block font-semibold mb-2">{field.label}:</label>
                 <textarea
-                  rows="2"
+                  rows="4"
                   className="w-full border-gray-300 border-2 p-2 rounded-md"
-                  placeholder="Enter Objective"
-                  value={objective}
-                  onChange={(e) => handleFieldChange(setObjectives, index, e.target.value)}
+                  value={field.value}
+                  onChange={(e) => field.setter(e.target.value)}
+                  onKeyDown={(e) => handleTextAreaKeyDown(e, field.setter, field.value)}
+                  placeholder={`Enter ${field.label.toLowerCase()}... (Press Enter for bullet points)`}
                 />
-                {objectives.length > 1 && (
-                  <button
-                    type="button"
-                    className="ml-2 text-red-500"
-                    onClick={() => removeField(setObjectives, index)}
-                  >
-                    Remove
-                  </button>
-                )}
               </div>
             ))}
-            <button
-              type="button"
-              className="mt-2 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
-              onClick={() => addField(setObjectives)}
-            >
-              Add Objective
-            </button>
-          </div>
 
-          {/* Sources of Fund */}
-          <div className="mt-4">
-            <label className="block font-semibold mb-2">SOURCES OF FUND:</label>
-            {sourcesOfFund.map((source, index) => (
-              <div key={index} className="flex items-center mb-2">
-                <input
-                  type="text"
-                  className="w-full border-gray-300 border-2 p-2 rounded-md"
-                  placeholder="Enter Source of Fund"
-                  value={source}
-                  onChange={(e) => handleFieldChange(setSourcesOfFund, index, e.target.value)}
-                />
-                {sourcesOfFund.length > 1 && (
-                  <button
-                    type="button"
-                    className="ml-2 text-red-500"
-                    onClick={() => removeField(setSourcesOfFund, index)}
-                  >
-                    Remove
-                  </button>
-                )}
-              </div>
-            ))}
-            <button
-              type="button"
-              className="mt-2 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
-              onClick={() => addField(setSourcesOfFund)}
-            >
-              Add Source of Fund
-            </button>
-          </div>
-
-          {/* Projected Expenses */}
-          <div className="mt-4">
-            <label className="block font-semibold mb-2">PROJECTED EXPENSES:</label>
-            {projectedExpenses.map((expense, index) => (
-              <div key={index} className="flex items-center mb-2">
-                <input
-                  type="text"
-                  className="w-full border-gray-300 border-2 p-2 rounded-md"
-                  placeholder="Enter Projected Expense"
-                  value={expense}
-                  onChange={(e) => handleFieldChange(setProjectedExpenses, index, e.target.value)}
-                />
-                {projectedExpenses.length > 1 && (
-                  <button
-                    type="button"
-                    className="ml-2 text-red-500"
-                    onClick={() => removeField(setProjectedExpenses, index)}
-                  >
-                    Remove
-                  </button>
-                )}
-              </div>
-            ))}
-            <button
-              type="button"
-              className="mt-2 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
-              onClick={() => addField(setProjectedExpenses)}
-            >
-              Add Projected Expense
-            </button>
-          </div>
-
-          {/* Expected Output */}
-          <div className="mt-4">
-            <label className="block font-semibold mb-2">EXPECTED OUTPUT:</label>
-            {expectedOutputs.map((output, index) => (
-              <div key={index} className="flex items-center mb-2">
-                <textarea
-                  rows="2"
-                  className="w-full border-gray-300 border-2 p-2 rounded-md"
-                  placeholder="Enter Expected Output"
-                  value={output}
-                  onChange={(e) => handleFieldChange(setExpectedOutputs, index, e.target.value)}
-                />
-                {expectedOutputs.length > 1 && (
-                  <button
-                    type="button"
-                    className="ml-2 text-red-500"
-                    onClick={() => removeField(setExpectedOutputs, index)}
-                  >
-                    Remove
-                  </button>
-                )}
-              </div>
-            ))}
-            <button
-              type="button"
-              className="mt-2 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
-              onClick={() => addField(setExpectedOutputs)}
-            >
-              Add Expected Output
-            </button>
-          </div>
-
-          {/* Prepared By */}
-          <div className="mt-6">
-            <div className="text-center">
-              <p className="font-semibold">Prepared by:</p>
-              <div className="mt-2">
-                <label className="block font-semibold mb-2">Attach Signature</label>
-                <input 
-                  type="file" 
-                  className="border-gray-300 border-2 p-2 rounded-md" 
-                  accept="image/*"
-                  onChange={handleSignatureChange}
-                />
-              </div>
-              {signaturePreview && (
-                <div className="mt-4">
-                  <p className="font-semibold">Signature Preview:</p>
-                  <img 
-                    src={signaturePreview} 
-                    alt="Signature Preview" 
-                    className="mx-auto border border-gray-300 p-2 rounded-md"
-                    style={{ maxHeight: '150px', maxWidth: '300px' }}
+            {/* Signature Section */}
+            <div className="mt-6">
+              <div className="text-center">
+                <p className="font-semibold">Prepared by:</p>
+                <div className="mt-2">
+                  <label className="block font-semibold mb-2">Attach Signature</label>
+                  <input 
+                    type="file" 
+                    className="border-gray-300 border-2 p-2 rounded-md" 
+                    accept="image/*"
+                    onChange={handleSignatureChange}
                   />
                 </div>
-              )}
-              <input 
-                type="text" 
-                className="w-full border-gray-300 border-2 p-2 rounded-md mt-2 text-center"
-                placeholder="Name of Club Mayor"
-              />
-              <p className="text-sm mt-2">POSITION, CLUB, A.Y. 2024-2025</p>
+                {signaturePreview && (
+                  <div className="mt-4">
+                    <p className="font-semibold">Signature Preview:</p>
+                    <img 
+                      src={signaturePreview} 
+                      alt="Signature Preview" 
+                      className="mx-auto border border-gray-300 p-2 rounded-md"
+                      style={{ maxHeight: '150px', maxWidth: '300px' }}
+                    />
+                  </div>
+                )}
+                <input 
+                  type="text" 
+                  className="w-full border-gray-300 border-2 p-2 rounded-md mt-2 text-center"
+                  placeholder="Name of Club Mayor"
+                />
+                <p className="text-sm mt-2">POSITION, CLUB, A.Y. 2024-2025</p>
+              </div>
             </div>
-          </div>
 
-          {/* Noted By */}
-          <div className="mt-6 text-center">
-            <p className="font-semibold">Noted by:</p>
-            <input
-              type="text"
-              className="w-full border-gray-300 border-2 p-2 rounded-md mt-2 text-center"
-              placeholder="Name of Club Moderator"
-            />
-            <p className="text-sm mt-2">MODERATOR, CLUB, A.Y. 2024-2025</p>
-          </div>
+            {/* Noted By */}
+            <div className="mt-6 text-center">
+              <p className="font-semibold">Noted by:</p>
+              <input
+                type="text"
+                className="w-full border-gray-300 border-2 p-2 rounded-md mt-2 text-center"
+                placeholder="Name of Club Moderator"
+              />
+              <p className="text-sm mt-2">MODERATOR, CLUB, A.Y. 2024-2025</p>
+            </div>
 
-          {/* Approved By */}
-          <div className="mt-6 text-center">
-            <p className="font-semibold">Approved by:</p>
-            <p className="mt-2, font-bold">BENJIE E. TAHUM, LPT, MAED-TESL</p>
-            <p>Director of Student Affairs</p>
-          </div>
+            {/* Approved By */}
+            <div className="mt-6 text-center">
+              <p className="font-semibold">Approved by:</p>
+              <p className="mt-2 font-bold">BENJIE E. TAHUM, LPT, MAED-TESL</p>
+              <p>Director of Student Affairs</p>
+            </div>
 
-          {/* Submit / Cancel Buttons */}
-          <div className="flex justify-end mt-6 space-x-4">
-            <button className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">Cancel</button>
-            <button className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">Submit</button>
+            {/* Submit / Cancel Buttons */}
+            <div className="flex justify-end mt-6 space-x-4">
+              <button className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">
+                Cancel
+              </button>
+              <button className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">
+                Submit
+              </button>
+            </div>
           </div>
         </div>
       </div>
